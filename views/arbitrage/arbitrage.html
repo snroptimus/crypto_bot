@@ -1,0 +1,190 @@
+{% extends "./base.html" %}
+
+{% block title %} Arbitrage Bot {% endblock %}
+
+{% block head %}
+<script>
+    $(document).ready(function() {
+        console.log("SDFSDFSDF");
+        // $(".show-all-coin").click(function(event) {
+        //     console.log("OKOK");
+        //     $.get("{% url 'show_all_coin' %}", function(){
+        //         location.reload();
+        //     });
+        // });
+
+        // $(".hide-zero-coin").click(function(event) {
+        //     console.log("OKOK");
+        //     $.get("{% url 'hide_zero_amount' %}", function(){
+        //         location.reload();
+        //     });
+        // });
+
+        // $(".start-bot").click(function(event) {
+        //     console.log("Start");
+        //     data = {
+        //         'divNumber': $('#divCount').val(),
+        //         'stepPercent': $('#stepPercent').val()
+        //     }
+
+        //     $.ajax({
+        //         type: "get",
+        //         url: "{% url 'start_bot' %}",
+        //         data: data,
+        //         success: function(response) {
+        //         },
+                
+        //     });
+        // });
+
+        // $(".stop-bot").click(function(event) {
+        //     console.log("Stop");
+        //     data = {
+        //         'divNumber': $('#divCount').val(),
+        //         'stepPercent': $('#stepPercent').val()
+        //     }
+
+        //     $.ajax({
+        //         type: "get",
+        //         url: "{% url 'stop_bot' %}",
+        //         data: data,
+        //         success: function(response) {
+
+        //         },
+        //     });
+        // });
+
+    });
+
+    function placeBuyOrders() {
+        console.log("Start");
+        data = {
+            'divNumber': $('#divCount').val(),
+            'stepPercent': $('#stepPercent').val(),
+            'side': 'buy'
+        }
+
+        $.ajax({
+            type: "get",
+            url: "{% url 'start_bot' %}",
+            data: data,
+            success: function(response) {
+            },
+            
+        });
+    }
+
+    function placeSellOrders() {
+        console.log("Start");
+        data = {
+            'divNumber': $('#divCount').val(),
+            'stepPercent': $('#stepPercent').val(),
+            'side': 'sell'
+        }
+
+        $.ajax({
+            type: "get",
+            url: "{% url 'start_bot' %}",
+            data: data,
+            success: function(response) {
+            },
+            
+        });
+    }
+
+    function cancelOrders() {
+        console.log("Stop");
+        data = {
+            'divNumber': $('#divCount').val(),
+            'stepPercent': $('#stepPercent').val()
+        }
+
+        $.ajax({
+            type: "get",
+            url: "{% url 'stop_bot' %}",
+            data: data,
+            success: function(response) {
+
+            },
+        });
+    }
+    function redirectUrl() {
+        console.log($('#org').val());
+    }
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+<div id="main" class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title" >Arbitrage Account Information</h1>
+    </div>
+    
+    <div class="panel-body">
+        <div class="poloniexButton">
+            <button class="btn  btn-default show-all-coin"></button>
+            <button class="btn  btn-default hide-zero-coin"></button>    
+        </div>
+        
+    {% if error != "" %}
+
+        <div class="alert alert-danger" role="alert"> {{ error }} </div>
+
+    {% endif %}
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th> Coin</th>
+                        <th> Balance</th>
+                        <th> Best Bid Price</th>
+                        <th> Best Ask Price</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for r in balances %}
+                        {% if bShowAll == True %}
+                            <tr>    
+                                <!-- <td>{{ r.coinName }}</td> -->
+                                <td>{{ r.coinName }}</td>
+                                <td>{{ r.balance }}</td>
+                                <td>{{ r.highestPrice }}</td>
+                                <td>{{ r.lowestPrice }}</td>
+                            </tr>
+                        {% else %}
+                            {% if r.coinAmount != "0.00000000" %}
+                             <tr>    
+                                <td>{{ r.coinName }}</td>
+                                <td>{{ r.balance }}</td>
+                                <td>{{ r.highestPrice }}</td>
+                                <td>{{ r.lowestPrice }}</td>
+                            </tr>   
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>        
+            </table>
+        </div>
+
+        <!-- <select id="org" name="market_list" onChange="redirectUrl()">
+        <option  value="" selected="selected">---SELECT---</option>
+        {% for r in balances %}
+            <option value="{{r.currentvalue}}">{{r.currentvalue}}</option>
+        {% endfor %}
+        </select>
+         -->
+         N <input id="divCount"/ value="10">
+         P <input id="stepPercent"/ value="0.5">
+        <button id="placeBuyOrders" class="btn  btn-default start-bot" onClick="placeBuyOrders()">Place Buy Orders</button>
+        <button id="placeSellOrders" class="btn  btn-default start-bot" onClick="placeSellOrders()">Place Sell Orders</button>
+        <button id="cancelOrders" class="btn  btn-default stop-bot" onClick="cancelOrders()">Cancel Orders</button>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

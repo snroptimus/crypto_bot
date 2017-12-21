@@ -1,0 +1,20 @@
+
+
+- GDAX Coinbase Sandbox API
+
+    Passphrase: jeboyoaazpl
+    Key: 603e48e47b3f2a184c5cca86049ffa53
+    secret: a7KOEF3QmRQ/TKP8GwfyMIwgyi649om84Tv5y/N/F6S1hKWrkTJUagbjwJHq86+xbcGLT4iKCgpQvdrMkl7MIg==
+
+    4pvpg9iz36
+    292ce23ae80f63d2e8317f4bac05c43c
+    OQVDrDiKn7tXwQMxRb+gD3sCl42PYPB75TFMBUwOA4dNFjz/HhHU/I3UrfcHOHqOEsl/OHiDvdX28MvlEEQmPA==
+
+- Gemini SandBox Account API
+    Key: qApEwFoL2qztTiCkkOAh
+    Secret: oXAfpFaGaW7k7rv7YezJ9RN9SnV
+
+
+21.4928684900000000
+
+89000.0001060028622500
