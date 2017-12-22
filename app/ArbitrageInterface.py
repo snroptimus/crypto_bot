@@ -39,10 +39,10 @@ import requests
 # geminiApi = Gemini(geminikey, geminisecret, True)
 # krakenApi = Kraken(krakenkey, krakensecret)
 
-#binanceKey = "QWQKiAhvI3z6jV3wWHcBhjkW3aqtfikGnTsItvmKVeND7nQtuNxVePysYJ1qECDx"
-binanceKey = "rqNAeUd6OodEOMz2lH2KZfYP0mRbRwt6uchJUeWwKq9ZAmRPCzgHIiFpSD8DFWYi"
-#binanceSecret = "hy4ztpnKH1YlfQDCE3L2BoA4Tsz1cE4a3jRzYR0hzCkClF71IAbZETbBjjvku515"
-binanceSecret = "67JhwejUWyKe7QbmxIC5i2BNQQnrHhJQCwr3pcXR39EqcLLToyQ0t0cSHFi7FGWi"
+binanceKey = "QWQKiAhvI3z6jV3wWHcBhjkW3aqtfikGnTsItvmKVeND7nQtuNxVePysYJ1qECDx"
+#binanceKey = "rqNAeUd6OodEOMz2lH2KZfYP0mRbRwt6uchJUeWwKq9ZAmRPCzgHIiFpSD8DFWYi"
+binanceSecret = "hy4ztpnKH1YlfQDCE3L2BoA4Tsz1cE4a3jRzYR0hzCkClF71IAbZETbBjjvku515"
+#binanceSecret = "67JhwejUWyKe7QbmxIC5i2BNQQnrHhJQCwr3pcXR39EqcLLToyQ0t0cSHFi7FGWi"
 binance_rest_client = BinanceRESTAPI(binanceKey, binanceSecret)
 
 bShowAll = False
@@ -243,17 +243,6 @@ def start_bot(request):
         
         print(stepPercent)
 
-        depth = binance_rest_client.depth("BTCUSDT")
-
-        # best bid price
-        highestPrice = depth.get_bids_highest_price()
-
-        # best ask price
-        lowestPrice = depth.get_asks_lowest_price()
-
-        print(highestPrice)
-        print(lowestPrice)
-
         account = binance_rest_client.account()
         btcBalance = 0
     # balance information
@@ -265,10 +254,10 @@ def start_bot(request):
             elif ( balance.asset == 'USDT' ):
                 print(balance.free)
                 print(balance.locked)
-
-        print(highestPrice)
         
         if ( request.GET['side'] == 'sell' ):
+            highestPrice = request.GET['sellHighestPrice']
+            print(highestPrice)
             priceStep = float(float(highestPrice) / 100 * stepPercent)
             print(priceStep)
             i = 0
@@ -288,6 +277,8 @@ def start_bot(request):
                 i = i + 1
         
         if ( request.GET['side'] == 'buy' ):
+            lowestPrice = request.GET['buyLowestPrice']
+            print(lowestPrice)
             priceStep = float(float(lowestPrice) / 100 * stepPercent)
             print(priceStep)
             i = 0

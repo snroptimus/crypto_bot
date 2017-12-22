@@ -61,6 +61,7 @@
         data = {
             'divNumber': $('#divCount').val(),
             'stepPercent': $('#stepPercent').val(),
+            'buyLowestPrice': $('#buyPrice').val(),
             'side': 'buy'
         }
 
@@ -79,6 +80,7 @@
         data = {
             'divNumber': $('#divCount').val(),
             'stepPercent': $('#stepPercent').val(),
+            'sellHighestPrice': $('#sellPrice').val(),
             'side': 'sell'
         }
 
@@ -178,9 +180,14 @@
          -->
          N <input id="divCount"/ value="10">
          P <input id="stepPercent"/ value="0.5">
-        <button id="placeBuyOrders" class="btn  btn-default start-bot" onClick="placeBuyOrders()">Place Buy Orders</button>
-        <button id="placeSellOrders" class="btn  btn-default start-bot" onClick="placeSellOrders()">Place Sell Orders</button>
-        <button id="cancelOrders" class="btn  btn-default stop-bot" onClick="cancelOrders()">Cancel Orders</button>
+        Sell Highest Price<input id="sellPrice"/ value="50000">
+        Buy Lowest Price<input id="buyPrice"/ value="1000">
+        <br/>
+        <div style="margin-top:30px;">
+            <button id="placeBuyOrders" class="btn  btn-default start-bot" onClick="placeBuyOrders()" style="margin-left:30px;">Place Buy Orders</button>
+            <button id="placeSellOrders" class="btn  btn-default start-bot" onClick="placeSellOrders()">Place Sell Orders</button>
+            <button id="cancelOrders" class="btn  btn-default stop-bot" onClick="cancelOrders()">Cancel Orders</button>
+        </div>
 
     </div>
 
