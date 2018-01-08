@@ -77,57 +77,45 @@ def accountInfo_read(request, **kwargs):
             print(balance.free)
             print(balance.locked)
 
-    # currentBTCPrice = bittrexApi.get_ticker(unicode('USDT-BTC'))['result']['Bid']
-    # currentBTCPrice_polo = poloniexapi.return_ticker()['USDT_BTC']['highestBid']
-    # print(currentBTCPrice)
-    # print(currentBTCPrice_polo)
-
-
-    # currentETHPrice = bittrexApi.get_ticker(unicode('USDT-ETH'))['result']['Bid']
-    # print("BTC_PRICE")
-    # print(currentBTCPrice)
-    # print(currentETHPrice)
-    
-    # print("OK")
-    # geminiBTCprice = float(geminiApi.get_ticker('btcusd')['last'])
-    # print(geminiBTCprice)
-
-    # gemiBalances = geminiApi.get_balance()
-    # print(gemiBalances)
-    # print("Awesome")
-
-    # gdaxBTCprice = (float)(gdaxApi.get_ticker('BTC-USD')['price'])
-    # print(gdaxBTCprice)
-    # gbalances = gdaxApi.get_balances()
-
-    # krakenBTCprice = float(krakenApi.get_ticker('XXBTZUSD')[0])
-    # print(krakenBTCprice)
-    # for bal in gbalances:
-    #     if ( bal['available'] != '0' ):
-    #         print(bal)
-
-    #         coinData = {
-    #             'coinName': bal['currency'],
-    #             'GDaxBalance': bal['balance'],
-    #             'GDaxPrice': gdaxBTCprice,
-    #             'GeminiBalance': 0,
-    #             'GeminiPrice': geminiBTCprice,
-    #             'Difference': gdaxBTCprice - geminiBTCprice,
-    #             'currentvalue': 0,
-    #             'unrealized': 0,
-    #             'realized': 0
-    #         }
-
-    #         balanceArray.insert(len(balanceArray), coinData)
-    # for bal in gemiBalances:
-    #     if ( bal['currency'] == 'BTC' ):
-    #         balanceArray[1]['GeminiBalance'] = bal['amount']
-    #     elif ( bal['currency'] == 'USD' ):
-    #         balanceArray[0]['GeminiBalance'] = bal['amount']
-
     coinData = {
         'coinName': "BTC",
         'balance': btcBalance,
+        'highestPrice': highestPrice,
+        'lowestPrice': lowestPrice,
+        'currentvalue': 0,
+        'unrealized': 0,
+        'realized': 0
+    }
+
+    balanceArray.insert(len(balanceArray), coinData)
+
+    depth = binance_rest_client.depth("ETHUSDT")
+
+    # total voulme
+    totalVolume = depth.get_depth_volume()
+
+    # best bid price
+    highestPrice = depth.get_bids_highest_price()
+
+    # best ask price
+    lowestPrice = depth.get_asks_lowest_price()
+
+    print(totalVolume)
+    print(highestPrice)
+    print(lowestPrice)
+
+    account = binance_rest_client.account()
+    ethBalance = 0
+# balance information
+    for balance in account.balances:
+        if ( balance.asset == "BTC" ):
+            btcBalance = balance.free
+            print(balance.free)
+            print(balance.locked)
+
+    coinData = {
+        'coinName': "ETH",
+        'balance': ethBalance,
         'highestPrice': highestPrice,
         'lowestPrice': lowestPrice,
         'currentvalue': 0,
@@ -247,7 +235,8 @@ def start_bot(request):
         btcBalance = 0
     # balance information
         for balance in account.balances:
-            if ( balance.asset == "BTC" ):
+#            if ( balance.asset == "BTC" ):
+            if ( balance.asset == request.GET['coin']):
                 btcBalance = balance.free
                 print(balance.free)
                 print(balance.locked)
@@ -268,7 +257,7 @@ def start_bot(request):
                 sellPrice = format(sellPrice, '.2f')
                 sellAmount = format(sellAmount, '.6f')
                 try:
-                    order = binance_rest_client.new_order("BTCUSDT", "SELL", "LIMIT", "GTC", sellAmount, sellPrice)
+                    order = binance_rest_client.new_order(request.GET['coin'] + "USDT", "SELL", "LIMIT", "GTC", sellAmount, sellPrice)
 
                     print order, type(order)
                 except Exception, e:
@@ -289,7 +278,7 @@ def start_bot(request):
                 buyPrice = format(buyPrice, '.2f')
                 buyAmount = format(buyAmount, '.6f')
                 try:
-                    order = binance_rest_client.new_order("BTCUSDT", "BUY", "LIMIT", "GTC", buyAmount, buyPrice)
+                    order = binance_rest_client.new_order(request.GET['coin'] + "USDT", "BUY", "LIMIT", "GTC", buyAmount, buyPrice)
 
                     print order
                 except Exception, e:
@@ -316,7 +305,7 @@ def stop_bot(request):
     btcBalance = 0
 # balance information
     for balance in account.balances:
-        if ( balance.asset == "BTC" ):
+        if ( balance.asset == request.GET['coin'] ):
             btcBalance = balance.free
             print(balance.free)
             print(balance.locked)
@@ -325,7 +314,7 @@ def stop_bot(request):
     # r = requests.get("https://www.binance.com/api/v3/openOrders", params=payload)
     # print(r)
     print "================="
-    orders = binance_rest_client.current_open_orders(symbol="BTCUSDT", recvWindow=6000000)
+    orders = binance_rest_client.current_open_orders(symbol=request.GET['coin'] + "USDT", recvWindow=6000000)
     print orders
     print "========"
     # orders = binance_rest_client.all_orders(symbol="BTCUSDT")
@@ -335,5 +324,13 @@ def stop_bot(request):
     for order in orders:
         if order.status == "NEW":
             print type(order), "=", order.id, "=", order.status, "=", order.side
-            order = binance_rest_client.cancel_order("BTCUSDT", order.id)
+            order = binance_rest_client.cancel_order(request.GET['coin'] + "USDT", order.id)
     return HttpResponse("Stop")
+
+def set_api(request):
+    global binance_rest_client
+    print("SET_API")
+    if (request.method == 'GET'):
+        print(request.GET)
+        binance_rest_client = BinanceRESTAPI(request.GET['key'], request.GET['secret'])
+    return HttpResponse("setAPI")

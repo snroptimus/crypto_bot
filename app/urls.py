@@ -13,6 +13,7 @@ urlpatterns = patterns('',
 	url(r'hideCoin$', "app.ArbitrageInterface.hide_zero_amount", name="hide_zero_amount"),
 	url(r'startBot$', "app.ArbitrageInterface.start_bot", name="start_bot"),
 	url(r'stopBot$', "app.ArbitrageInterface.stop_bot", name="stop_bot"),
+	url(r'setAPI$', "app.ArbitrageInterface.set_api", name="set_api"),
 
 	
 	url(r'login$', "app.auth.user_login", name="login"),
